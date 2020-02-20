@@ -150,7 +150,7 @@ body {
                     }
 
                     &::placeholder {
-                        color: rgba(0, 0, 0, 0.4);
+                        color: var(--foreground);
                     }
                 }
 
