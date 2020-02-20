@@ -25,6 +25,12 @@ function onMouseDown(e) {
   }
 };
 
+function handlePrefersColorScheme(darkScheme) {
+  if (darkScheme.matches) theme = "dark";
+  else theme = "light";
+  onResize();
+}
+
 /*
   Memo Functions and Handlers
 */
@@ -397,13 +403,15 @@ function handleBoardDragEnd(e) {
 */
 
 function toggleTheme() {
-  const body = document.querySelector("body");
+  const body = document.documentElement;
   if (theme === "light") {
+    body.classList.remove("light");
     body.classList.add("dark");
     theme = "dark";
     setLocalStorageItem("manifest_theme", "dark");
   } else {
     body.classList.remove("dark");
+    body.classList.add("light");
     theme = "light";
     setLocalStorageItem("manifest_theme", "light");
   }
@@ -413,17 +421,19 @@ function toggleTheme() {
 }
 
 function handleTheme() {
-  const body = document.querySelector("body");
+  const body = document.documentElement;
   const savedPreference = getLocalStorageItem("manifest_theme");
 
   // Prefer saved preference over OS preference
   if (savedPreference) {
     if (savedPreference === "dark") {
+      body.classList.remove("light");
       body.classList.add("dark");
       theme = "dark";
       setLocalStorageItem("manifest_theme", "dark");
     } else {
       body.classList.remove("dark");
+      body.classList.add("light");
       theme = "light";
       setLocalStorageItem("manifest_theme", "light");
     }
@@ -431,8 +441,9 @@ function handleTheme() {
   }
 
   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    body.classList.add("dark");
     theme = "dark";
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    theme = "light";
   }
 }
 
@@ -521,3 +532,4 @@ function onLoad() {
 window.addEventListener("resize", onResize);
 window.addEventListener("load", onLoad);
 window.addEventListener("keydown", onKeydown);
+window.matchMedia("(prefers-color-scheme: dark)").addListener(handlePrefersColorScheme);
